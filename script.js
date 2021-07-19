@@ -1,14 +1,28 @@
 const parseArgs = (argsArray) => argsArray.slice(2);
 
-const input = parseArgs(process.argv);
-console.log(input);
+let input = parseArgs(process.argv);
 
-if (!Number(input[0]) || !Number(input[2]))
-  return console.log("Please enter numerals number");
+const METHOD = {
+  plus: (num1, num2) => num1 + num2,
+  minus: (num1, num2) => num1 - num2,
+  times: (num1, num2) => num1 * num2,
+  divided: (num1, num2) => num1 / num2,
+};
+METHOD["+"] = METHOD.plus;
+METHOD["-"] = METHOD.minus;
+METHOD["*"] = METHOD.times;
+METHOD["/"] = METHOD.divided;
 
-if (input[1] === "plus") console.log(Number(input[0]) + Number(input[2]));
-else if (input[1] === "minus") console.log(Number(input[0]) - Number(input[2]));
-else if (input[1] === "times") console.log(Number(input[0]) * Number(input[2]));
-else if (input[1] === "divided")
-  console.log(Number(input[0]) / Number(input[2]));
-else console.log("Commend incorrect");
+for (let i = 0; i < input.length; i += 2) {
+  input[i] = Number(input[i]);
+  if (!Number(input[i])) return console.log("Please enter numerals number");
+}
+
+console.log("input", input);
+let result = input[0];
+for (let i = 1; i < input.length - 1; i += 2) {
+  result = METHOD[input[i]](result, input[i + 1]);
+  console.log("Interim", result);
+}
+
+console.log("Final result", result);
