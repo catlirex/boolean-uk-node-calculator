@@ -1,6 +1,42 @@
-const parseArgs = (argsArray) => argsArray.slice(2);
+const fs = require("fs/promises");
 
-let input = parseArgs(process.argv);
+const parseArgs = (argsArray) => argsArray.slice(2);
+let commend = parseArgs(process.argv);
+
+if (commend[0] !== "-f") return console.log("Cmd not found");
+
+let input = [];
+let precedenceCheck = false;
+let result = null;
+
+fs.readFile(commend[1], "utf-8")
+  .then((file) => {
+    input = file.split(" ");
+    console.log(input);
+    runTheMath();
+  })
+  .catch((reason) => console.log("File not found"));
+
+//  ** Using terminal Argv to calculate **
+// const parseArgs = (argsArray) => argsArray.slice(2);
+// let input = parseArgs(process.argv);
+// console.log("input", input);
+
+function runTheMath() {
+  for (let i = 0; i < input.length; i += 2) {
+    input[i] = Number(input[i]);
+    if (!Number(input[i])) return console.log("Please enter numerals number");
+  }
+
+  do {
+    precedence();
+  } while (precedenceCheck === false);
+
+  calculation();
+  console.log("Final result", result);
+}
+
+// Calculate Function
 
 const METHOD = {
   plus: (num1, num2) => num1 + num2,
@@ -12,23 +48,6 @@ METHOD["+"] = METHOD.plus;
 METHOD["-"] = METHOD.minus;
 METHOD["*"] = METHOD.times;
 METHOD["/"] = METHOD.divided;
-
-for (let i = 0; i < input.length; i += 2) {
-  input[i] = Number(input[i]);
-  if (!Number(input[i])) return console.log("Please enter numerals number");
-}
-
-console.log("input", input);
-
-let precedenceCheck = false;
-let result = null;
-
-do {
-  precedence();
-} while (precedenceCheck === false);
-
-calculation();
-console.log("Final result", result);
 
 function precedence() {
   for (let i = 1; i < input.length - 1; i += 2) {
