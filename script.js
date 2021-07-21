@@ -15,7 +15,7 @@ fs.readFile(commend[1], "utf-8")
     console.log(input);
     runTheMath();
   })
-  .catch((reason) => console.log("File not found"));
+  .catch((reason) => console.log("File not found", reason));
 
 //  ** Using terminal Argv to calculate **
 // const parseArgs = (argsArray) => argsArray.slice(2);
@@ -29,11 +29,13 @@ function runTheMath() {
   }
 
   do {
+    console.log(precedenceCheck);
     precedence();
   } while (precedenceCheck === false);
 
+  if (input.length === 1) return console.log("Final result", input[0]);
   calculation();
-  console.log("Final result", result);
+  return console.log("Final result", result);
 }
 
 // Calculate Function
@@ -61,6 +63,7 @@ function precedence() {
 
       input.splice(i, 2);
       console.log(input);
+      if (i >= input.length - 2) precedenceCheck = true;
       break;
     }
 
@@ -70,6 +73,10 @@ function precedence() {
 
 function calculation() {
   for (let i = 1; i < input.length - 1; i += 2) {
+    if (METHOD[input[i]] === undefined) {
+      console.log("Wrong Input");
+      break;
+    }
     if (result === null) result = METHOD[input[i]](input[i - 1], input[i + 1]);
     else result = METHOD[input[i]](result, input[i + 1]);
     console.log("Interim", result);
